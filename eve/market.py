@@ -108,10 +108,13 @@ class MarketResults(object):
 		return self._allStats
 	
 	def __repr__(self):
-		return "MarketResults(%s, %s, %s)" % tuple(map(repr, (self.getBuyStats(), self.getSellStats(), self.getAllStats())))
+		buy = repr(self.getBuyStats())
+		sell = repr(self.getSellStats())
+		all = repr(self.getAllStats())
+		return "MarketResults({}, {}, {})".format(buy, sell, all)
 	
 	def __str__(self):
-		return "Market Results:\nbuy: %s\nsell: %s\nall: %s" % tuple(map(str, (self.getBuyStats(), self.getSellStats(), self.getAllStats())))
+		return "Market Results:\nbuy: {}\nsell: {}\nall: {}".format(self.getBuyStats(), self.getSellStats(), self.getAllStats())
 
 def parseResults(text):
 	root = ElementTree.XML(text)
