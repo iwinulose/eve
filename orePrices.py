@@ -37,22 +37,50 @@ Fetches market data from eve-central and prints out a list of ore
 values per m3. 
 """
 
+PRICE_TYPE_PERCENTILE = "percentile"
+PRICE_TYPE_AVERAGE = "average"
+PRICE_TYPE_MIN = "min" 
+PRICE_TYPE_MAX = "max"
+PRICE_TYPE_DEFAULT = PRICE_TYPE_PERCENTILE
+
+ORDER_TYPE_BUY = "buy"
+ORDER_TYPE_SELL = "sell"
+ORDER_TYPE_DEFAULT = ORDER_TYPE_BUY
+
+
+def get_unit_price(result, order_type=ORDER_TYPE_DEFAULT, price_type=PRICE_TYPE_DEFAULT):
+	market_stats = None
+	price = 0.0
+	if order_type == ORDER_TYPE_BUY:
+		market_stats = result.getBuyStats()
+	elif order_type == ORDER_TYPE_SELL:
+		market_stats = result.getSellStats()
+	else:
+		raise ValueError("Invalid order type {}".format(order_type))
+	if price_type == PRICE_TYPE_PERCENTILE:
+		price = market_stats.getPercentile()
+	elif price_type == PRICE_TYPE_AVERAGE:
+		price = market_stats.getAverage()
+	elif price_type == PRICE_TYPE_MIN:
+		price = market_stats.getMin()
+	elif price_type == PRICE_TYPE_MAX:
+		price = market_stats.getMax()
+	else:
+		raise ValueError("Invalid price type {}".format(price_type))
+	return price
+	
+
 def main(args):
 	region = args.region
 	ores = eve.ore.ores()
 	regions = eve.regions.find(region)
 	marketResults = eve.market.query(ores, regions=regions)
-	showSell = args.sell
 	showPerUnit = args.unit_price
 	l = []
 	for ore in marketResults:
 		result = marketResults[ore]
 		name = ore.getName()
-		if showSell:
-			marketStats = result.getSellStats()
-		else:
-			marketStats = result.getBuyStats()
-		pricePerUnit = marketStats.getPercentile()
+		pricePerUnit = get_unit_price(result, args.order_type, args.price_type)
 		pricePerM3 = ore.valueByVolume(pricePerUnit)
 		price = pricePerUnit if showPerUnit else pricePerM3
 		l.append((name, price))
@@ -62,9 +90,45 @@ def main(args):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description=progDescription)
-	parser.add_argument("-r", "--region", help="Regions to use in price lookup. Default is \"The Forge\"", default="The Forge")
-	parser.add_argument("-a", "--all", help="Shows more information about the ores.", action="store_true")
-	parser.add_argument("-s", "--sell", help="Show sell order prices (default buy orders)", action="store_true")
-	parser.add_argument("-u", "--unit-price", help="Show price per unit, not per m3", action="store_true")
+	parser.add_argument("-r", "--region", 
+		default="The Forge", 
+		help="Regions to use in price lookup. Default is \"The Forge\"")
+	parser.add_argument("-u", "--unit-price", 
+		action="store_true", 
+		help="Show price per unit")
+	order_type_group = parser.add_mutually_exclusive_group()
+	order_type_group.add_argument("-b", "--buy", 
+		dest="order_type", 
+		action="store_const", 
+		default=ORDER_TYPE_DEFAULT, 
+		const=ORDER_TYPE_BUY, 
+		help="Show buy orders (default)")
+	order_type_group.add_argument("-s", "--sell", 
+		dest="order_type",
+		action="store_const", 
+		const=ORDER_TYPE_SELL, 
+		help="Show sell orders")
+	price_type_group = parser.add_mutually_exclusive_group()
+	price_type_group.add_argument("--percentile", 
+		dest="price_type",
+		action="store_const",
+		const=PRICE_TYPE_PERCENTILE,
+		default=PRICE_TYPE_DEFAULT,
+		help="Show highest 5% of buy orders, or lowest 5% of sell orders (default)")
+	price_type_group.add_argument("--min", 
+		dest="price_type",
+		action="store_const",
+		const=PRICE_TYPE_MIN,
+		help="Show minimum prices")
+	price_type_group.add_argument("--max", 
+		dest="price_type",
+		action="store_const",
+		const=PRICE_TYPE_MAX,
+		help="Show maximum prices")
+	price_type_group.add_argument("--average", "--avg",
+		dest="price_type",
+		action="store_const",
+		const=PRICE_TYPE_AVERAGE,
+		help="Show average prices")
 	args = parser.parse_args()
 	main(args)
