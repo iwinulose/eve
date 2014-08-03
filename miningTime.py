@@ -32,21 +32,6 @@ import eve.market
 import argparse
 import sys
 
-progDescription = """
-Displays information about asteroids and mining.
-"""
-
-parser = argparse.ArgumentParser(description=progDescription)
-parser.add_argument("-r", "--region", help="Regions to use in price lookup. Default is \"The Forge\"", default="The Forge")
-parser.add_argument("-s", help="Skip market lookup", action="store_false", dest="lookup")
-parser.add_argument("-e","--exact", help="Match ore name exactly. Note that matches--even exact--are ALWAYS case insensitive", action="store_true")
-parser.add_argument("-m", help="Specify an ammount in m3. Displays units of ore mined instead of m3", action="store_true", dest="specify_meters") 
-parser.add_argument("ore", help="Ore being mined")
-parser.add_argument("size", help="Size of the asteroid (units)", type=float)
-parser.add_argument("rate", help="Ore mined per cycle (m3)", nargs='?', type=float, default=0.0)
-parser.add_argument("cycleTime", help="Cycle time (default 60)", nargs='?', type=float, default=60.0)
-args = parser.parse_args()
-
 def timeString(seconds):
 	hours = seconds / 3600
 	seconds = seconds % 3600
@@ -54,7 +39,7 @@ def timeString(seconds):
 	seconds = seconds % 60
 	return "%.2d:%.2d:%.2d" % (hours, minutes, seconds)
 
-def main():
+def main(args):
 	oreName = args.ore
 	exact = args.exact
 	sizeInMeters = args.specify_meters
@@ -94,4 +79,15 @@ def main():
 		print "\t".join(l)
 
 if __name__ == "__main__":
-	main()
+	progDescription = "Displays information about asteroids and mining."
+	parser = argparse.ArgumentParser(description=progDescription)
+	parser.add_argument("-r", "--region", help="Regions to use in price lookup. Default is \"The Forge\"", default="The Forge")
+	parser.add_argument("-s", help="Skip market lookup", action="store_false", dest="lookup")
+	parser.add_argument("-e","--exact", help="Match ore name exactly. Note that matches--even exact--are ALWAYS case insensitive", action="store_true")
+	parser.add_argument("-m", help="Specify an ammount in m3. Displays units of ore mined instead of m3", action="store_true", dest="specify_meters") 
+	parser.add_argument("ore", help="Ore being mined")
+	parser.add_argument("size", help="Size of the asteroid (units)", type=float)
+	parser.add_argument("rate", help="Ore mined per cycle (m3)", nargs='?', type=float, default=0.0)
+	parser.add_argument("cycleTime", help="Cycle time (default 60)", nargs='?', type=float, default=60.0)
+	args = parser.parse_args()
+	main(args)
