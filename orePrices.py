@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2014, Charles Duyk
+# Copyright (c) 2016, Charles Duyk
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -114,7 +114,7 @@ if __name__ == "__main__":
 		action="store_const",
 		const=PRICE_TYPE_PERCENTILE,
 		default=PRICE_TYPE_DEFAULT,
-		help="Show highest 5% of buy orders, or lowest 5% of sell orders (default)")
+		help="Show highest 5%% of buy orders, or lowest 5%% of sell orders (default)")
 	price_type_group.add_argument("--min", 
 		dest="price_type",
 		action="store_const",

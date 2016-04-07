@@ -1,4 +1,4 @@
-# Copyright (c) 2014, Charles Duyk
+# Copyright (c) 2016, Charles Duyk
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -56,8 +56,6 @@ ORES = {
 	"veldspar"				: Ore("Veldspar", 1230, 0.1),
 	"dense veldspar"		: Ore("Dense Veldspar", 17471, 0.1),
 	"concentrated veldspar"	: Ore("Concentrated Veldspar", 17470, 0.1),
-}
-"""
 	"omber"					: Ore("Omber", 1227, 0.6, upper=0.7),
 	"golden omber"			: Ore("Golden Omber", 17868, 0.6, upper=0.7),
 	"silvery omber"			: Ore("Silvery Omber", 17867, 0.6, upper=0.7),
@@ -70,7 +68,7 @@ ORES = {
 	"kernite"				: Ore("Kernite", 20, 1.2, upper=0.7),
 	"fiery kernite"			: Ore("Fiery Kernite", 17453, 1.2, upper=0.7),
 	"luminous kernite"		: Ore("Luminous Kernite", 17452, 1.2, upper=0.7),
-"""
+}
 
 def ores():
 	return ORES.values()
