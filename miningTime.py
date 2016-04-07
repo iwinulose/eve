@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2014, Charles Duyk
+# Copyright (c) 2016, Charles Duyk
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,8 @@ def main(args):
 			l.append("%.2f ISK (@ %.2f)" % (pricePerUnit * sizeInUnits, pricePerUnit))
 		if rate > 0.0:
 			timeToEmpty = m3/rate * cycle 
-			l.append(timeString(timeToEmpty))
+			numCycles = m3/rate
+			l.append("%s (%.1f cycles)" % (timeString(timeToEmpty), numCycles))
 		print "\t".join(l)
 
 if __name__ == "__main__":
